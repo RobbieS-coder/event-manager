@@ -47,6 +47,7 @@ def most_frequent_sign_up_time(times)
 end
 
 hours = []
+days = []
 
 contents = CSV.open(
   'event_attendees.csv',
@@ -54,12 +55,23 @@ contents = CSV.open(
   header_converters: :symbol
 )
 
+CAL = { 0 => "Sunday", 1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday" }
+
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
 contents.each do |row|
-  hour = row[:regdate].split(' ')[1].split(':')[0]
+  date_info = row[:regdate]
+  date = date_info.split(' ')[0]
+  month, day, year = date.split('/')
+  year = '20' + year
+  day_of_week = Date.new(year.to_i, month.to_i, day.to_i).wday
+  days << day_of_week
+
+  time = date_info.split(' ')[1]
+  hour = time.split(':')[0]
   hours << hour
+
   id = row[0]
   name = row[:first_name]
   number = clean_phone_number(row[:homephone])
@@ -71,4 +83,5 @@ contents.each do |row|
   save_thank_you_letter(id, form_letter)
 end
 
-puts "The most hour that most people signed up was #{most_frequent_sign_up_time(hours)}."
+puts "The hour that most people signed up was #{most_frequent_sign_up_time(hours)}."
+puts "The day that most people signed up was #{CAL[most_frequent_sign_up_time(days)]}."
