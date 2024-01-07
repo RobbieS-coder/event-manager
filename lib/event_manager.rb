@@ -42,6 +42,12 @@ def save_thank_you_letter(id,form_letter)
   end
 end
 
+def most_frequent_sign_up_time(times)
+  times.group_by { |element| element }.max_by { |key, value| value.length }[0]
+end
+
+hours = []
+
 contents = CSV.open(
   'event_attendees.csv',
   headers: true,
@@ -52,6 +58,8 @@ template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
 contents.each do |row|
+  hour = row[:regdate].split(' ')[1].split(':')[0]
+  hours << hour
   id = row[0]
   name = row[:first_name]
   number = clean_phone_number(row[:homephone])
@@ -62,3 +70,5 @@ contents.each do |row|
 
   save_thank_you_letter(id, form_letter)
 end
+
+puts "The most hour that most people signed up was #{most_frequent_sign_up_time(hours)}."
