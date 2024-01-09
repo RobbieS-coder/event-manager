@@ -55,7 +55,7 @@ contents = CSV.open(
   header_converters: :symbol
 )
 
-CAL = { 0 => "Sunday", 1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday" }
+CAL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
